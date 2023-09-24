@@ -1,0 +1,37 @@
+id: service-now-stats-enabled
+
+info:
+  name: ServiceNow Misconfigurations Check
+  author: blindu_ch https:/www.blindu.ch https://twitter.com/blindu_ch https://github.com/blinduch
+  severity: medium
+  description: Detection of ServiceNow with stats enabled.
+  reference: 
+    - https://support.servicenow.com/kb?id=kb_article_view&sysparm_article=KB0517269
+  tags: servicenow
+  metadata:
+    max-request: 1
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/stats.do"
+      - "{{BaseURL}}/threads.do"
+      - "{{BaseURL}}/replication.do"
+
+    matchers-condition: or
+    matchers:
+      - type: word
+        words:
+          - '<title>Servlet statistics</title>'
+        part: body
+
+      - type: word
+        words:
+          - '<title>Replication Status</title>'
+        part: body
+
+      - type: word
+        words:
+          - '<title>Servlet thread information</title>'
+        part: body
+
